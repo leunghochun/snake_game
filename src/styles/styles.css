@@ -1,0 +1,41 @@
+.layout {
+  width: 100vw;
+  display: flex;
+  justify-content: space-between;
+}
+.main{
+  width:80vw;
+}
+.control{
+  width:20vw;
+}
+
+@media only screen and (max-width: 400px) {
+  .layout {
+    display: block;
+  }
+  .main{
+    width: 100vw;
+  }
+  .control{
+    width: 100vw;
+  }
+}
+
+.rectangle {
+  background: black;
+  flex-grow: 1;
+  width: 3.33%;
+  height: 3.33%;
+}
+
+.snake {
+  background: red;
+}
+
+.playground {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100vw;
+  align-content: flex-start;
+}
