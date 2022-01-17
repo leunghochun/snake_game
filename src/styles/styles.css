@@ -33,9 +33,19 @@
   background: red;
 }
 
+.snack{
+  background: yellow;
+}
+
 .playground {
   display: flex;
   flex-wrap: wrap;
   width: 100vw;
   align-content: flex-start;
+}
+
+.control {
+  display: grid;
+  grid-gap: 1px;
+  grid-template-columns: repeat(3, 1fr);
 }

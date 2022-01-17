@@ -1,39 +1,20 @@
-// import { useEffect } from "react";
-
-const handleKeyPress = (e) => {
-    switch (e.keyCode) {
-        case 37:
-            console.log('left');
-            break;
-        case 38:
-            console.log('up');
-            break;
-        case 39:
-            console.log('right');
-            break;
-        case 40:
-            console.log('down');
-            break;
-        default:
-            console.log('keypress:', e.keyCode);
-    }
-}
-
-// useEffect(() => {
-//     window.addEventListener('keydown', downHandler)
-//     window.addEventListener('keyup', upHandler)
-//     return () => {
-//       window.removeEventListener('keydown', downHandler)
-//       window.removeEventListener('keyup', upHandler)
-//     }
-// }, [])
-
-const Control = () => {
+const Control = ({handleButtonPress}) => {
     return (
-        <div id="control"> 
+        <>
             Row : <input id="row"/> <br/>
             Column : <input id="column"/>
-        </div>
+            <div className="control">
+                <div/>
+                <button onClick={() => handleButtonPress('UP')}>UP</button>
+                <div/>
+                <button onClick={() => handleButtonPress('LEFT')}>LEFT</button>
+                <div/>
+                <button onClick={() => handleButtonPress('RIGHT')}>RIGHT</button>
+                <div/>
+                <button onClick={() => handleButtonPress('DOWN')}>DOWN</button>
+                <div/>
+            </div>
+        </>
     )
 }
 

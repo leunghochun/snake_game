@@ -1,87 +1,103 @@
 import React , {useEffect, useState} from 'react';
 import './styles/styles.css';
-import Playground from './pages/playground.js';
-import Control from './pages/control.js';
+import Playground, {Init, NewSnack} from './pages/playground.js';
+import snake from './components/snake';
+import Control from './pages/control';
 
 const App = (props) => {
   const {row, column} = props;
-  const [snake, setSnake] = useState([Math.floor(row/2), Math.floor(column/2)]);
-  const [map, setMap] = useState(new Array(parseInt(row)));
-  // const [position, setPosition] = React.useState([Math.floor(row/2), Math.floor(column/2)]);
+  const [size, setSize] = useState(2);
+  const [snack, setSnack] = useState(props.snack);
+  const [snakeArray, setSnakeArray] = useState(props.snakeArray);
+  const [mapArray, setMapArray] = useState(props.mapArray);
 
-  console.log(snake);
-  for (let i=0; i<row; i++)
-    map[i] = new Array(parseInt(column));
+  console.log('App:', mapArray, ',size:,', size, snakeArray, row, column);
 
-  for (let i=0; i<map.length; i++)
-    for (let j=0; j<map[i].length; j++) {
-      map[i][j] = '';
+  const handleButtonPress = (direction) => {
+    let newSnake = [...snakeArray];
+    let newMap = [...mapArray];
+    let newSize = size;
+    let newSnack = snack;
+
+    let head = snake.move(newSnake, newMap, direction, row, column);
+    if (head === null) return;
+
+    newSize = snake.growth(newSize, head, snack);
+    // snake update
+    newSnake.unshift(head);
+    newMap[head[0]][head[1]] = 'snake';
+    // tail update
+    let tail = snakeArray.length >= newSize ? newSnake.pop() : null;
+    if (tail !== null) newMap[tail[0]][tail[1]]= '';
+    // update state
+    console.log('size:', size, newSize);
+    if (size !== newSize) {
+      newSnack = NewSnack(row, column, newMap);
+      newMap[newSnack[0]][newSnack[1]] = 'snack';
+      setSnack(newSnack);
     }
-  
+    setSize(newSize);
+    setSnakeArray(newSnake);
+    setMapArray(newMap);
+  }
+
   const handleKeyPress = (e) => {
+    let direction = '';
     switch (e.keyCode) {
         case 37:
-            console.log('left');
+            direction = 'LEFT';
             break;
         case 38:
-            console.log('up');
+            direction = 'UP';
             break;
         case 39:
-            console.log('right');
+            direction = 'RIGHT';
             break;
         case 40:
-            console.log('down');
+            direction = 'DOWN';
             break;
         default:
             console.log('keypress:', e.keyCode);
+            return;
     }
+    handleButtonPress(direction);
   }
 
   useEffect(() => {
-    document.addEventListener("keydown", handleKeyPress, false);
+    const keyDown = document.addEventListener("keydown", handleKeyPress, false);
     return () => {
-      document.removeEventListener("keydown", handleKeyPress, false);
+      document.removeEventListener(keyDown);
     };
   }, []);
-  // const moveSnake = (direction) => {
-  //   let head = this.state.snake[0];
-  //   switch (direction) {
-  //     case 'UP':
-  //       break;
-  //     case 'DOWN':
-  //       break;
-  //     case 'LEFT':
-  //       break;
-  //     case 'RIGHT':
-  //       break;
-  //   }
-  // }
-
-  const updateMap = (x, y, value, direction) => {
-    map[x][y] = value;
-    // if (direction === undefined) {
-    //   map[x][y] = value;
-    //   // setSnake([x, y]);
-    // } else {
-    // }
-  }
-
-  updateMap(snake[0], snake[1], 'snake', 'LEFT');
 
   return (
     <>
       <div className='layout'>
-        <Playground className="main" row={row} column={column} map={map}/>
-        <Control className="control" onUpdateMap={updateMap}/>
+        <Playground className="main" 
+          row={row} 
+          column={column} 
+          mapArray={mapArray}
+          snakeArray={snakeArray}
+          snack={snack}
+          />
+        <Control handleButtonPress={handleButtonPress}/>
       </div>
     </>
   );
 }
 
+const ROW = 20;
+const COLUMN = 30;
+const SNACK = NewSnack(ROW, COLUMN);
+const SNAKEARRAY = [[Math.floor(ROW/2), Math.floor(COLUMN/2)]];
+const MAPARRAY = Init(ROW, COLUMN, SNAKEARRAY, SNACK);
 // Set default props
 App.defaultProps = {
-  row: '20',
-  column: '30'
+  row: ROW,
+  column: COLUMN,
+  snack: SNACK,
+  snakeArray: SNAKEARRAY,
+  mapArray: MAPARRAY
 };
 
 export default App;
