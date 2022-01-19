@@ -60,12 +60,10 @@ const api = {
 
     axios(config)
       .then(function (response) {
-        // console.log(JSON.stringify(response.data));
-        console.log(response.data);
-
-        // let model = { }
-        console.log(response.data.documents[0].object);
-        return response.data;
+        let model = [];
+        for(let i=0; i<response.data.documents.length; i++)
+            model.push(response.data.documents[i].object);
+        return model;
       })
       .catch(function (error) {
         console.log(error);
