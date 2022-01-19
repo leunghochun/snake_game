@@ -1,8 +1,32 @@
-const Control = ({handleButtonPress}) => {
+const Control = ({handleButtonPress, distance}) => {
+    const handleKeyPress = (e) => {
+        let direction = '';
+        switch (e.keyCode) {
+            case 37:
+                direction = 'LEFT';
+                break;
+            case 38:
+                direction = 'UP';
+                break;
+            case 39:
+                direction = 'RIGHT';
+                break;
+            case 40:
+                direction = 'DOWN';
+                break;
+            default:
+                console.log('keypress:', e.keyCode);
+                return;
+        }
+        handleButtonPress(direction);
+    }
+
     return (
-        <>
-            Row : <input id="row"/> <br/>
-            Column : <input id="column"/>
+        <div>
+            <div >
+                Arrow key control: <input autoFocus id="row" onKeyDown={handleKeyPress}/> <br/>
+                Distance: {distance}
+            </div>
             <div className="control">
                 <div/>
                 <button onClick={() => handleButtonPress('UP')}>UP</button>
@@ -14,7 +38,7 @@ const Control = ({handleButtonPress}) => {
                 <button onClick={() => handleButtonPress('DOWN')}>DOWN</button>
                 <div/>
             </div>
-        </>
+        </div>
     )
 }
 

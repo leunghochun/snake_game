@@ -31,16 +31,12 @@ const snake = {
             // return false;
             return null;
 
-        // arr.unshift([x,y]);
+        // new head return
         return [x, y];
-        // return arr.pop();
     },
     growth(size, head, snack) {
-        console.log('growth:', size, head, snack);
-        console.log(head[0], snack[0], head[1], snack[1]) ;
         if (head[0] === snack[0] && head[1] === snack[1]) {
-            console.log('ate snack');
-            return size * 2;
+            return size + 2;
         }
         return size;
     }

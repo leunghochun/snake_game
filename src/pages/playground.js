@@ -1,6 +1,10 @@
 import snake from "../components/snake";
 import Square from "../components/square";
 
+const Distance = (head, snack) => {
+    return Math.sqrt(Math.pow(head[0]-snack[0], 2) + Math.pow(head[1]-snack[1], 2));
+}
+
 const Init = (row, column, snakeArray, snack) => {
     console.log('Init', row, column, snack);
     let map = new Array(parseInt(row))
@@ -15,6 +19,7 @@ const Init = (row, column, snakeArray, snack) => {
     map[snack[0]][snack[1]] = 'snack';
     return map;
 }
+
 const NewSnack = (row, column, oldMap) => {
     let x = Math.floor(Math.random() * row);
     let y = Math.floor(Math.random() * column);
@@ -45,4 +50,4 @@ const Playground = (props) => {
 }
 
 export default Playground;
-export {Init, NewSnack};
+export {Init, NewSnack, Distance};

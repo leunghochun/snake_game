@@ -1,8 +1,9 @@
 import React , {useEffect, useState} from 'react';
 import './styles/styles.css';
-import Playground, {Init, NewSnack} from './pages/playground.js';
-import snake from './components/snake';
+import Playground, {Distance, Init, NewSnack} from './pages/playground.js';
 import Control from './pages/control';
+import snake from './components/snake';
+import api from './adapters/api';
 
 const App = (props) => {
   const {row, column} = props;
@@ -10,16 +11,18 @@ const App = (props) => {
   const [snack, setSnack] = useState(props.snack);
   const [snakeArray, setSnakeArray] = useState(props.snakeArray);
   const [mapArray, setMapArray] = useState(props.mapArray);
+  const [distance, setDistance] = useState(props.distance);
+  const [direction, setDirection] = useState(null);
 
   console.log('App:', mapArray, ',size:,', size, snakeArray, row, column);
 
-  const handleButtonPress = (direction) => {
+  const handleButtonPress = (direct) => {
     let newSnake = [...snakeArray];
     let newMap = [...mapArray];
     let newSize = size;
     let newSnack = snack;
 
-    let head = snake.move(newSnake, newMap, direction, row, column);
+    let head = snake.move(newSnake, newMap, direct, row, column);
     if (head === null) return;
 
     newSize = snake.growth(newSize, head, snack);
@@ -36,39 +39,29 @@ const App = (props) => {
       newMap[newSnack[0]][newSnack[1]] = 'snack';
       setSnack(newSnack);
     }
+
+    setDirection(direct);
+    setDistance(Distance(newSnake[0], newSnack));
     setSize(newSize);
     setSnakeArray(newSnake);
     setMapArray(newMap);
   }
 
-  const handleKeyPress = (e) => {
-    let direction = '';
-    switch (e.keyCode) {
-        case 37:
-            direction = 'LEFT';
-            break;
-        case 38:
-            direction = 'UP';
-            break;
-        case 39:
-            direction = 'RIGHT';
-            break;
-        case 40:
-            direction = 'DOWN';
-            break;
-        default:
-            console.log('keypress:', e.keyCode);
-            return;
-    }
-    handleButtonPress(direction);
-  }
+  useEffect(() => {
+    console.log('did mount');
+  })
 
   useEffect(() => {
-    const keyDown = document.addEventListener("keydown", handleKeyPress, false);
-    return () => {
-      document.removeEventListener(keyDown);
-    };
-  }, []);
+    console.log('useEffect SnakeArray change', JSON.stringify(snakeArray), direction, snack);
+
+    let data = {
+      snake: snakeArray,
+      snack: snack,
+      direction: direction
+    }
+    if (direction !== null)
+      api.insert(data);
+  }, [snakeArray])
 
   return (
     <>
@@ -80,7 +73,7 @@ const App = (props) => {
           snakeArray={snakeArray}
           snack={snack}
           />
-        <Control handleButtonPress={handleButtonPress}/>
+        <Control handleButtonPress={handleButtonPress} distance={distance}/>
       </div>
     </>
   );
@@ -91,13 +84,17 @@ const COLUMN = 30;
 const SNACK = NewSnack(ROW, COLUMN);
 const SNAKEARRAY = [[Math.floor(ROW/2), Math.floor(COLUMN/2)]];
 const MAPARRAY = Init(ROW, COLUMN, SNAKEARRAY, SNACK);
+const DISTANCE = Distance(SNAKEARRAY[0], SNACK);
+const model = api.getModel();
+
 // Set default props
 App.defaultProps = {
   row: ROW,
   column: COLUMN,
   snack: SNACK,
   snakeArray: SNAKEARRAY,
-  mapArray: MAPARRAY
+  mapArray: MAPARRAY,
+  distance: DISTANCE
 };
 
 export default App;

@@ -1,4 +1,7 @@
+import React from 'react';
+
 const Square = (props) => {
+    console.log('Square');
     let size = 100 / props.size ;
     let style = {
         width: size + '%',
@@ -7,4 +10,8 @@ const Square = (props) => {
     return <div id={props.id} className={`rectangle ${props.snake}`} style={style} />;
 };
 
-export default Square;
+const areEqual = (prevProps, nextProps) => {
+    return prevProps.snake === nextProps.snake;
+};
+
+export default React.memo(Square, areEqual);
