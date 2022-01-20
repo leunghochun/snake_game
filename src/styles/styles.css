@@ -44,6 +44,10 @@
   align-content: flex-start;
 }
 
+.right {
+  flex-direction: column;
+}
+
 .control {
   display: grid;
   grid-gap: 1px;
