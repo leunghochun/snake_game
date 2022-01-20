@@ -15,9 +15,14 @@ const App = (props) => {
   const [distance, setDistance] = useState(props.distance);
   const [direction, setDirection] = useState(null);
   const [prediction, setPrediction] = useState(null);
+  const [trainingDone, setTrainingDone] = useState(null);
 
   // console.log('App:', mapArray, ',size:,', size, snakeArray, row, column);
 
+  const handleTrainingCompleted = (result) => {
+    console.log('handleTrainingCompleted', result);
+    setTrainingDone(result);
+  }
   const handleResult = (result) => {
     console.log('handleResult:', result);
     setPrediction(result);
@@ -64,7 +69,7 @@ const App = (props) => {
     // api.getModel().then((res) => setModel(res));
     console.log("effect", prediction)
     if (prediction === null)
-      api.getModel().then((res) => model.init(res));
+      api.getModel().then((res) => model.init(res, handleTrainingCompleted));
     // console.log('did mount');
   })
 
@@ -91,7 +96,7 @@ const App = (props) => {
           snack={snack}
           />
         <div className='right'>
-          <Control handleButtonPress={handleButtonPress} distance={distance}/>
+          <Control handleButtonPress={handleButtonPress} distance={distance} trainingDone={trainingDone}/>
           {
             prediction && 
             <div>

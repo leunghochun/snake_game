@@ -8,7 +8,7 @@ const options = {
 const nn = ml5.neuralNetwork(options);
 
 const model = {
-  init(data) {
+  init(data, handleTrainingCompleted) {
     // console.log(data)
     data.forEach(item => {
       const inputs = {};
@@ -32,7 +32,7 @@ const model = {
 
     // Step 7: use the trained model
     const finishedTraining = () => {
-      console.log('finish training')
+      handleTrainingCompleted('finish training');
     }
 
     // Step 6: train your neural network
@@ -40,6 +40,7 @@ const model = {
       epochs: 32,
       batchSize: 12
     }
+    console.log('train data');
     nn.train(trainingOptions, finishedTraining);
 
   },

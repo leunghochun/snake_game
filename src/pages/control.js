@@ -1,4 +1,4 @@
-const Control = ({handleButtonPress, distance}) => {
+const Control = ({handleButtonPress, distance, trainingDone}) => {
     const handleKeyPress = (e) => {
         let direction = '';
         switch (e.keyCode) {
@@ -25,7 +25,7 @@ const Control = ({handleButtonPress, distance}) => {
         <div>
             <div >
                 Arrow key control: <input autoFocus id="row" onKeyDown={handleKeyPress}/> <br/>
-                Distance: {distance}
+                Distance: {Number.parseFloat(distance).toFixed(2)} {trainingDone}
             </div>
             <div className="control">
                 <div/>
