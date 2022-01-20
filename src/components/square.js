@@ -1,7 +1,7 @@
 import React from 'react';
 
 const Square = (props) => {
-    console.log('Square');
+    // console.log('Square');
     let size = 100 / props.size ;
     let style = {
         width: size + '%',

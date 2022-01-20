@@ -4,6 +4,7 @@ import Playground, {Distance, Init, NewSnack} from './pages/playground.js';
 import Control from './pages/control';
 import snake from './components/snake';
 import api from './adapters/api';
+import model from './components/model';
 
 const App = (props) => {
   const {row, column} = props;
@@ -13,8 +14,14 @@ const App = (props) => {
   const [mapArray, setMapArray] = useState(props.mapArray);
   const [distance, setDistance] = useState(props.distance);
   const [direction, setDirection] = useState(null);
+  const [prediction, setPrediction] = useState(null);
 
-  console.log('App:', mapArray, ',size:,', size, snakeArray, row, column);
+  // console.log('App:', mapArray, ',size:,', size, snakeArray, row, column);
+
+  const handleResult = (result) => {
+    console.log('handleResult:', result);
+    setPrediction(result);
+  }
 
   const handleButtonPress = (direct) => {
     let newSnake = [...snakeArray];
@@ -33,13 +40,19 @@ const App = (props) => {
     let tail = snakeArray.length >= newSize ? newSnake.pop() : null;
     if (tail !== null) newMap[tail[0]][tail[1]]= '';
     // update state
-    console.log('size:', size, newSize);
+    // console.log('size:', size, newSize);
     if (size !== newSize) {
       newSnack = NewSnack(row, column, newMap);
       newMap[newSnack[0]][newSnack[1]] = 'snack';
       setSnack(newSnack);
     }
 
+    const data = {
+      snake: newSnake,
+      snack: newSnack
+    }
+    model.classify(data, handleResult);
+    
     setDirection(direct);
     setDistance(Distance(newSnake[0], newSnack));
     setSize(newSize);
@@ -48,11 +61,13 @@ const App = (props) => {
   }
 
   useEffect(() => {
-    console.log('did mount');
+    // api.getModel().then((res) => setModel(res));
+    api.getModel().then((res) => model.init(res));
+    // console.log('did mount');
   })
 
   useEffect(() => {
-    console.log('useEffect SnakeArray change', JSON.stringify(snakeArray), direction, snack);
+    // console.log('useEffect SnakeArray change', JSON.stringify(snakeArray), direction, snack);
 
     let data = {
       snake: snakeArray,
@@ -73,7 +88,15 @@ const App = (props) => {
           snakeArray={snakeArray}
           snack={snack}
           />
-        <Control handleButtonPress={handleButtonPress} distance={distance}/>
+        <div className='right'>
+          <Control handleButtonPress={handleButtonPress} distance={distance}/>
+          {
+            prediction && 
+            <div>
+              {prediction.map((object, i) => <div>{object.label}:{object.confidence.toFixed(2)}</div>)}
+            </div>
+          }
+        </div>
       </div>
     </>
   );
@@ -85,7 +108,6 @@ const SNACK = NewSnack(ROW, COLUMN);
 const SNAKEARRAY = [[Math.floor(ROW/2), Math.floor(COLUMN/2)]];
 const MAPARRAY = Init(ROW, COLUMN, SNAKEARRAY, SNACK);
 const DISTANCE = Distance(SNAKEARRAY[0], SNACK);
-const model = api.getModel();
 
 // Set default props
 App.defaultProps = {
@@ -94,7 +116,8 @@ App.defaultProps = {
   snack: SNACK,
   snakeArray: SNAKEARRAY,
   mapArray: MAPARRAY,
-  distance: DISTANCE
+  distance: DISTANCE,
 };
+
 
 export default App;

@@ -1,4 +1,3 @@
-import snake from "../components/snake";
 import Square from "../components/square";
 
 const Distance = (head, snack) => {
@@ -24,14 +23,14 @@ const NewSnack = (row, column, oldMap) => {
     let x = Math.floor(Math.random() * row);
     let y = Math.floor(Math.random() * column);
     // if (oldSnack !== undefined && x === oldSnack[0] && y === oldSnack[1])
-    console.log('NewSnack:', x,y,oldMap);
+    // console.log('NewSnack:', x,y,oldMap);
     if (oldMap !== undefined && oldMap[x][y]!== '')
         return NewSnack(row, column, oldMap);   
     return [x, y];
 }
 
 const Playground = (props) => {
-    console.log('Playground:', props.mapArray)
+    // console.log('Playground:', props.mapArray)
     return (
             <div id="playground" className="playground">
                 {

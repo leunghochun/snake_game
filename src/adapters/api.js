@@ -2,7 +2,7 @@ let axios = require("axios");
 
 const api = {
   insert(object) {
-    console.log("insert", object);
+    // console.log("insert", object);
 
     let data = JSON.stringify({
       collection: "model",
@@ -35,8 +35,8 @@ const api = {
         console.log(error);
       });
   },
-  getModel() {
-    console.log("getModel");
+  async getModel() {
+    // console.log("getModel");
 
     let data = JSON.stringify({
       collection: "model",
@@ -58,16 +58,22 @@ const api = {
       data: data,
     };
 
-    axios(config)
-      .then(function (response) {
-        let model = [];
-        for(let i=0; i<response.data.documents.length; i++)
-            model.push(response.data.documents[i].object);
-        return model;
+    let res = await axios(config)
+      .then((response) => {
+        return response.data;
       })
       .catch(function (error) {
         console.log(error);
       });
+      
+    let model = [];
+    for(let i=0; i<res.documents.length; i++) {
+      // res.documents[i].object.snake = JSON.stringify(res.documents[i].object.snake);
+      // res.documents[i].object.snack = JSON.stringify(res.documents[i].object.snack);
+      model.push(res.documents[i].object);
+    }
+    // console.log('model:', model);
+    return model;
   }
 };
 
