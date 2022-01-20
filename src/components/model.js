@@ -2,7 +2,7 @@ let ml5 = require("ml5");
 
 const options = {
   task: "classification",
-  debug: true,
+  debug: false,
 };
 
 const nn = ml5.neuralNetwork(options);

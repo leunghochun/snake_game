@@ -36,7 +36,7 @@ const api = {
       });
   },
   async getModel() {
-    // console.log("getModel");
+    console.log("getModel");
 
     let data = JSON.stringify({
       collection: "model",

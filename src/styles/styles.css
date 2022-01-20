@@ -26,7 +26,7 @@
   background: black;
   flex-grow: 1;
   width: 3.33%;
-  height: 3.33%;
+  height: 2%
 }
 
 .snake {
@@ -52,4 +52,8 @@
   display: grid;
   grid-gap: 1px;
   grid-template-columns: repeat(3, 1fr);
+}
+
+.arrowButton{
+  height: 4vh;
 }

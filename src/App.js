@@ -62,7 +62,9 @@ const App = (props) => {
 
   useEffect(() => {
     // api.getModel().then((res) => setModel(res));
-    api.getModel().then((res) => model.init(res));
+    console.log("effect", prediction)
+    if (prediction === null)
+      api.getModel().then((res) => model.init(res));
     // console.log('did mount');
   })
 
@@ -93,7 +95,7 @@ const App = (props) => {
           {
             prediction && 
             <div>
-              {prediction.map((object, i) => <div>{object.label}:{object.confidence.toFixed(2)}</div>)}
+              {prediction.map((object, i) => <div key={i}>{object.label}:{object.confidence.toFixed(2)}</div>)}
             </div>
           }
         </div>
