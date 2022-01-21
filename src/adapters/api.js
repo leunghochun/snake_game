@@ -42,6 +42,7 @@ const api = {
       collection: "model",
       database: "snake_game",
       dataSource: "Cluster0",
+      limit: 50000
     });
 
     let config = {
@@ -72,6 +73,7 @@ const api = {
       // res.documents[i].object.snack = JSON.stringify(res.documents[i].object.snack);
       model.push(res.documents[i].object);
     }
+    console.log(res)
     // console.log('model:', model);
     return model;
   }
