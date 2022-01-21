@@ -117,7 +117,7 @@ const App = (props) => {
 }
 
 const ROW = 20;
-const COLUMN = 30;
+const COLUMN = 20;
 const SNACK = NewSnack(ROW, COLUMN);
 const SNAKEARRAY = [[Math.floor(ROW/2), Math.floor(COLUMN/2)]];
 const MAPARRAY = Init(ROW, COLUMN, SNAKEARRAY, SNACK);
