@@ -4,7 +4,7 @@ import Playground, {Distance, Init, NewSnack} from './pages/playground.js';
 import Control from './pages/control';
 import snake from './components/snake';
 import api from './adapters/api';
-import model from './components/model';
+import model, {HashCode} from './components/model';
 
 const App = (props) => {
   const {row, column} = props;
@@ -20,8 +20,13 @@ const App = (props) => {
   // console.log('App:', mapArray, ',size:,', size, snakeArray, row, column);
 
   const handleTrainingCompleted = (result) => {
-    console.log('handleTrainingCompleted', result);
+    console.log('handleTrainingCompleted', result, snack);
     setTrainingDone(result);
+    const data = {
+      snake: HashCode(JSON.stringify(snake)),
+      snack: HashCode(JSON.stringify(snack))
+    }
+    model.classify(data, handleResult);
   }
   const handleResult = (result) => {
     console.log('handleResult:', result);
@@ -45,17 +50,19 @@ const App = (props) => {
     let tail = snakeArray.length >= newSize ? newSnake.pop() : null;
     if (tail !== null) newMap[tail[0]][tail[1]]= '';
     // update state
-    // console.log('size:', size, newSize);
-    if (size !== newSize) {
+    // console.log(head, newSnack, newSnack[0]);
+    // if (size !== newSize) {
+    if (head[0] === newSnack[0] && head[1] === newSnack[1]) {
       newSnack = NewSnack(row, column, newMap);
       newMap[newSnack[0]][newSnack[1]] = 'snack';
       setSnack(newSnack);
     }
 
     const data = {
-      snake: newSnake,
-      snack: newSnack
+      snake: HashCode(JSON.stringify(newSnake)),
+      snack: HashCode(JSON.stringify(newSnack))
     }
+
     model.classify(data, handleResult);
     
     setDirection(direct);
@@ -77,13 +84,13 @@ const App = (props) => {
     // console.log('useEffect SnakeArray change', JSON.stringify(snakeArray), direction, snack);
 
     let data = {
-      snake: snakeArray,
-      snack: snack,
+      snake: HashCode(JSON.stringify(snakeArray)),
+      snack: HashCode(JSON.stringify(snack)),
       direction: direction
     }
     if (direction !== null)
       api.insert(data);
-  }, [snakeArray])
+  }, [snakeArray, snack, direction])
 
   return (
     <>

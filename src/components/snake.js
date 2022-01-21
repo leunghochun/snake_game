@@ -22,7 +22,7 @@ const snake = {
     }
 
     // check boundary
-    if (x < 0 || y < 0 || x >= row || y > column)
+    if (x < 0 || y < 0 || x >= row || y >= column)
       // return false;
       return null;
 
@@ -35,8 +35,9 @@ const snake = {
     return [x, y];
   },
   growth(size, head, snack) {
+    const maxSize = 40;
     if (head[0] === snack[0] && head[1] === snack[1]) {
-      return size + 2;
+      return Math.min(maxSize, size + 2);
     }
     return size;
   },
