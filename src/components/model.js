@@ -1,4 +1,7 @@
-let ml5 = require("ml5");
+const ml5 = require("ml5");
+// const dataModel = require("../model/model.json");
+// const metaData = require("../model/model_meta.json");
+// const weights = require("../model/model.weights.bin");
 
 const HashCode = (s) => {
   let hash = 0;
@@ -16,15 +19,20 @@ const options = {
   debug: false,
 };
 
+const trainingOptions = {
+  epochs: 128,
+  batchSize: 12,
+};
+
 const nn = ml5.neuralNetwork(options);
 
 const model = {
-  init(data, handleTrainingCompleted, snack) {
+  init(data, handleTrainingCompleted) {
     data.forEach((item) => {
       const inputs = {
         snake: item.snake,
         snackX: item.snackX,
-        snackY: item.snackY
+        snackY: item.snackY,
       };
 
       const output = {
@@ -41,13 +49,26 @@ const model = {
       handleTrainingCompleted("finish training");
     };
 
-    // Step 6: train your neural network
-    const trainingOptions = {
-      epochs: 128,
-      batchSize: 12,
+    const whileTraining = (epoch, loss) => {
+      // console.log("epoch:", epoch, ", loss:", loss);
     };
+
     console.log("train data");
-    nn.train(trainingOptions, finishedTraining);
+    nn.train(trainingOptions, whileTraining, finishedTraining);
+  },
+  load(handleTrainingCompleted) {
+    const modelLoaded = () => {
+      // continue on your neural network journey
+      // use nn.classify() for classifications or nn.predict() for regressions
+      console.log("model loaded");
+      handleTrainingCompleted("finish training");
+    }
+
+    nn.load({
+      model: "../model/model.json",
+      metadata: "../model/model_meta.json",
+      weights: "../model/model.weights.bin"
+    }, modelLoaded);
   },
   // Step 8: make a classification
   classify(item, handleResult) {
@@ -55,7 +76,7 @@ const model = {
     const input = {
       snake: item.snake,
       snackX: item.snackX,
-      snackY: item.snackY
+      snackY: item.snackY,
     };
 
     const handleResults = (error, result) => {
@@ -67,6 +88,12 @@ const model = {
       handleResult(result);
     };
     nn.classify(input, handleResults);
+  },
+  saveModel() {
+    nn.saveData("snake_game");
+  },
+  save() {
+    nn.save();
   },
 };
 

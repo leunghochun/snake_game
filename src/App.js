@@ -32,29 +32,12 @@ const App = (props) => {
 
   const handleResult = (result) => {
     console.log('handleResult:', result, snakeArray, mapArray);
-    // let nextSteps = [];
-    // for(const predict of result) {
-    //   let head = snake.move(snakeArray, mapArray, predict.label, row, column);
-    //   if (head !== null) {
-    //     console.log(head, Distance(head, snack), predict.label, predict.confidence);
-    //     nextSteps.push([Distance(head, snack), predict.confidence, predict.label]);
-    //   }
-    // }
     setPrediction(result);
-
-    // if (nextSteps.length <= 2) return;
-    // nextSteps = nextSteps.sort((a, b) => { 
-    //   let diff = a[0] - b[0];
-    //   if (diff !== 0) return diff;
-    //   return b[1] - a[1];
-    // });
-    // console.log("nextSteps:", nextSteps, nextSteps[0][2]);
-
-    // let nextStep = nextSteps[0][2];
-    // handleButtonPress(result[0].label);
   }
 
   const handleButtonPress = (direct) => {
+    if (direct === "SAVE") { model.save(); return; }
+    if (direct === "SAVEMODEL") { model.saveModel(); return; }
     let newSnake = [...snakeArray];
     let newMap = [...mapArray];
     let newSize = size;
@@ -87,8 +70,10 @@ const App = (props) => {
   useEffect(() => {
     // api.getModel().then((res) => setModel(res));
     console.log("effect", trainingDone)
-    if (trainingDone === null)
-      api.getModel().then((res) => model.init(res, handleTrainingCompleted));
+    if (trainingDone === null) {
+      model.load(handleTrainingCompleted);
+    }
+      // api.getModel().then((res) => model.init(res, handleTrainingCompleted));
     // console.log('did mount');
   })
 
