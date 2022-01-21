@@ -112,8 +112,9 @@ const App = (props) => {
     }
     if (direction !== null)
       api.insert(data);
-    model.classify(data, handleResult);
-  }, [direction, snakeArray, snack])
+    if (trainingDone === null) return;
+      model.classify(data, handleResult);
+  }, [direction, snakeArray, snack, trainingDone])
 
   return (
     <>
