@@ -29,13 +29,13 @@ const Control = ({handleButtonPress, distance, trainingDone}) => {
             </div>
             <div className="control">
                 <div/>
-                <button className="arrowButton" onClick={() => handleButtonPress('UP')}>UP</button>
+                <button id="arrowUp" className="arrowButton" onClick={() => handleButtonPress('UP')}>UP</button>
                 <div/>
-                <button className="arrowButton" onClick={() => handleButtonPress('LEFT')}>LEFT</button>
+                <button id="arrowLeft" className="arrowButton" onClick={() => handleButtonPress('LEFT')}>LEFT</button>
                 <div/>
-                <button className="arrowButton" onClick={() => handleButtonPress('RIGHT')}>RIGHT</button>
+                <button id="arrowRight" className="arrowButton" onClick={() => handleButtonPress('RIGHT')}>RIGHT</button>
                 <div/>
-                <button className="arrowButton" onClick={() => handleButtonPress('DOWN')}>DOWN</button>
+                <button id="arrowDown" className="arrowButton" onClick={() => handleButtonPress('DOWN')}>DOWN</button>
                 <div/>
             </div>
         </div>

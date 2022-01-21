@@ -2,7 +2,7 @@ let ml5 = require("ml5");
 
 const HashCode = (s) => {
   let hash = 0;
-  if (s.length == 0) return hash;
+  if (s.length === 0) return hash;
   for (let i = 0; i < s.length; i++) {
     let char = s.charCodeAt(i);
     hash = (hash << 5) - hash + char;
@@ -22,8 +22,9 @@ const model = {
   init(data, handleTrainingCompleted, snack) {
     data.forEach((item) => {
       const inputs = {
-        snake: HashCode(JSON.stringify(item.snake)),
-        snack: HashCode(JSON.stringify(item.snack)),
+        snake: item.snake,
+        snackX: item.snackX,
+        snackY: item.snackY
       };
 
       const output = {
@@ -32,7 +33,7 @@ const model = {
       nn.addData(inputs, output);
     });
 
-    console.log("normalize data");
+    console.log("normalize data", data);
     nn.normalizeData();
 
     // Step 7: use the trained model
@@ -42,7 +43,7 @@ const model = {
 
     // Step 6: train your neural network
     const trainingOptions = {
-      epochs: 32,
+      epochs: 128,
       batchSize: 12,
     };
     console.log("train data");
@@ -52,8 +53,9 @@ const model = {
   classify(item, handleResult) {
     // console.log(data)
     const input = {
-      snake: HashCode(JSON.stringify(item.snake)),
-      snack: HashCode(JSON.stringify(item.snack)),
+      snake: item.snake,
+      snackX: item.snackX,
+      snackY: item.snackY
     };
 
     const handleResults = (error, result) => {

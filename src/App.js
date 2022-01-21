@@ -22,15 +22,36 @@ const App = (props) => {
   const handleTrainingCompleted = (result) => {
     console.log('handleTrainingCompleted', result, snack);
     setTrainingDone(result);
-    const data = {
-      snake: HashCode(JSON.stringify(snake)),
-      snack: HashCode(JSON.stringify(snack))
+    let data = {
+      snake: HashCode(JSON.stringify(snakeArray)),
+      snackX: snack[0],
+      snackY: snack[1]
     }
     model.classify(data, handleResult);
   }
+
   const handleResult = (result) => {
-    console.log('handleResult:', result);
+    console.log('handleResult:', result, snakeArray, mapArray);
+    // let nextSteps = [];
+    // for(const predict of result) {
+    //   let head = snake.move(snakeArray, mapArray, predict.label, row, column);
+    //   if (head !== null) {
+    //     console.log(head, Distance(head, snack), predict.label, predict.confidence);
+    //     nextSteps.push([Distance(head, snack), predict.confidence, predict.label]);
+    //   }
+    // }
     setPrediction(result);
+
+    // if (nextSteps.length <= 2) return;
+    // nextSteps = nextSteps.sort((a, b) => { 
+    //   let diff = a[0] - b[0];
+    //   if (diff !== 0) return diff;
+    //   return b[1] - a[1];
+    // });
+    // console.log("nextSteps:", nextSteps, nextSteps[0][2]);
+
+    // let nextStep = nextSteps[0][2];
+    // handleButtonPress(result[0].label);
   }
 
   const handleButtonPress = (direct) => {
@@ -50,21 +71,12 @@ const App = (props) => {
     let tail = snakeArray.length >= newSize ? newSnake.pop() : null;
     if (tail !== null) newMap[tail[0]][tail[1]]= '';
     // update state
-    // console.log(head, newSnack, newSnack[0]);
-    // if (size !== newSize) {
     if (head[0] === newSnack[0] && head[1] === newSnack[1]) {
       newSnack = NewSnack(row, column, newMap);
       newMap[newSnack[0]][newSnack[1]] = 'snack';
       setSnack(newSnack);
     }
 
-    const data = {
-      snake: HashCode(JSON.stringify(newSnake)),
-      snack: HashCode(JSON.stringify(newSnack))
-    }
-
-    model.classify(data, handleResult);
-    
     setDirection(direct);
     setDistance(Distance(newSnake[0], newSnack));
     setSize(newSize);
@@ -74,23 +86,34 @@ const App = (props) => {
 
   useEffect(() => {
     // api.getModel().then((res) => setModel(res));
-    console.log("effect", prediction)
-    if (prediction === null)
+    console.log("effect", trainingDone)
+    if (trainingDone === null)
       api.getModel().then((res) => model.init(res, handleTrainingCompleted));
     // console.log('did mount');
   })
 
-  useEffect(() => {
-    // console.log('useEffect SnakeArray change', JSON.stringify(snakeArray), direction, snack);
+  // useEffect(() => {
+  //   // console.log("snakeArray snack effect", snakeArray, snack, trainingDone);
+  //   if (trainingDone === null) return;
+  //   let data = {
+  //     snake: HashCode(JSON.stringify(snakeArray)),
+  //     snackX: snack[0],
+  //     snackY: snack[1]
+  //   }
+  //   model.classify(data, handleResult);
+  // }, [snack, snakeArray, trainingDone])
 
+  useEffect(() => {
     let data = {
       snake: HashCode(JSON.stringify(snakeArray)),
-      snack: HashCode(JSON.stringify(snack)),
+      snackX: snack[0],
+      snackY: snack[1],
       direction: direction
     }
     if (direction !== null)
       api.insert(data);
-  }, [snakeArray, snack, direction])
+    model.classify(data, handleResult);
+  }, [direction, snakeArray, snack])
 
   return (
     <>
