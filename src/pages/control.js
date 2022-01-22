@@ -34,8 +34,13 @@ const Control = ({handleButtonPress, distance, trainingDone}) => {
                 <button id="arrowLeft" className="arrowButton" onClick={() => handleButtonPress('LEFT')}>LEFT</button>
                 <div/>
                 <button id="arrowRight" className="arrowButton" onClick={() => handleButtonPress('RIGHT')}>RIGHT</button>
-                <button id="save" className="arrowButton" onClick={() => handleButtonPress('SAVE')}>SAVE</button>
+                <div/>
                 <button id="arrowDown" className="arrowButton" onClick={() => handleButtonPress('DOWN')}>DOWN</button>
+                <div/>
+            </div>
+            <div className="modelPanel"> 
+                <button id="reload" className="arrowButton" onClick={() => handleButtonPress('RELOAD')}>RELOAD</button>
+                <button id="save" className="arrowButton" onClick={() => handleButtonPress('SAVE')}>SAVE</button>
                 <button id="saveModel" className="arrowButton" onClick={() => handleButtonPress('SAVEMODEL')}>SAVE MODEL</button>
             </div>
         </div>

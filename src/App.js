@@ -38,6 +38,11 @@ const App = (props) => {
   const handleButtonPress = (direct) => {
     if (direct === "SAVE") { model.save(); return; }
     if (direct === "SAVEMODEL") { model.saveModel(); return; }
+    if (direct === "RELOAD") { 
+      api.getModel().then((res) => model.init(res, handleTrainingCompleted));
+      return;
+    }
+
     let newSnake = [...snakeArray];
     let newMap = [...mapArray];
     let newSize = size;
@@ -72,8 +77,8 @@ const App = (props) => {
     console.log("effect", trainingDone)
     if (trainingDone === null) {
       model.load(handleTrainingCompleted);
-    }
       // api.getModel().then((res) => model.init(res, handleTrainingCompleted));
+    }
     // console.log('did mount');
   })
 

@@ -21,7 +21,7 @@ const options = {
 
 const trainingOptions = {
   epochs: 128,
-  batchSize: 12,
+  batchSize: 1024,
 };
 
 const nn = ml5.neuralNetwork(options);
