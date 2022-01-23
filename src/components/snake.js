@@ -1,27 +1,6 @@
-const snake = {
-  step(arr, direction) {
-    let x, y;
-    [x, y] = arr;
+const maxSize = 10;
 
-    switch (direction) {
-      case "UP":
-        x--;
-        break;
-      case "DOWN":
-        x++;
-        break;
-      case "RIGHT":
-        y++;
-        break;
-      case "LEFT":
-        y--;
-        break;
-      default:
-        console.log("Wrong direction");
-        break;
-    }
-    return [x, y];
-  },
+const snake = {
   move(arr, map, direction, row, column) {
     let x, y;
     [x, y] = arr[0];
@@ -67,3 +46,4 @@ const snake = {
 };
 
 export default snake;
+export {maxSize};

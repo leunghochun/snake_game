@@ -1,4 +1,11 @@
-const Control = ({handleButtonPress, distance, trainingDone}) => {
+const Control = ({  handleButtonPress, 
+                    distance, 
+                    trainingDone,
+                    upRef,
+                    downRef,
+                    leftRef,
+                    rightRef
+                }) => {
     const handleKeyPress = (e) => {
         let direction = '';
         switch (e.keyCode) {
@@ -29,13 +36,13 @@ const Control = ({handleButtonPress, distance, trainingDone}) => {
             </div>
             <div className="control">
                 <div/>
-                <button id="arrowUp" className="arrowButton" onClick={() => handleButtonPress('UP')}>UP</button>
+                <button ref={upRef} id="arrowUp" className="arrowButton" onClick={() => handleButtonPress('UP')}>UP</button>
                 <div/>
-                <button id="arrowLeft" className="arrowButton" onClick={() => handleButtonPress('LEFT')}>LEFT</button>
+                <button ref={leftRef} id="arrowLeft" className="arrowButton" onClick={() => handleButtonPress('LEFT')}>LEFT</button>
                 <div/>
-                <button id="arrowRight" className="arrowButton" onClick={() => handleButtonPress('RIGHT')}>RIGHT</button>
+                <button ref={rightRef} id="arrowRight" className="arrowButton" onClick={() => handleButtonPress('RIGHT')}>RIGHT</button>
                 <div/>
-                <button id="arrowDown" className="arrowButton" onClick={() => handleButtonPress('DOWN')}>DOWN</button>
+                <button ref={downRef} id="arrowDown" className="arrowButton" onClick={() => handleButtonPress('DOWN')}>DOWN</button>
                 <div/>
             </div>
             <div className="modelPanel"> 
