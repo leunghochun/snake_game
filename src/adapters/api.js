@@ -2,7 +2,7 @@ let axios = require("axios");
 
 const api = {
   insert(object) {
-    // console.log("insert", object);
+    console.log("insert", object);
 
     let data = JSON.stringify({
       collection: "model",

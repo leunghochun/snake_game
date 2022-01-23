@@ -1,42 +1,68 @@
+import { maxSize } from "./snake";
+
 const ml5 = require("ml5");
 // const dataModel = require("../model/model.json");
 // const metaData = require("../model/model_meta.json");
 // const weights = require("../model/model.weights.bin");
 
-const HashCode = (s) => {
-  let hash = 0;
-  if (s.length === 0) return hash;
-  for (let i = 0; i < s.length; i++) {
-    let char = s.charCodeAt(i);
-    hash = (hash << 5) - hash + char;
-    hash = hash & hash; // Convert to 32bit integer
+// const HashCode = (s) => {
+//   let hash = 0;
+//   if (s.length === 0) return hash;
+//   for (let i = 0; i < s.length; i++) {
+//     let char = s.charCodeAt(i);
+//     hash = (hash << 5) - hash + char;
+//     hash = hash & hash; // Convert to 32bit integer
+//   }
+//   return hash;
+// };
+
+const GenerateInput = (snake, snack) => {
+  let inputs = {}
+  for (let i=0; i<maxSize; i++) {
+    inputs["snake_" + i + "_X"] = snake[i] ? snake[i][0] : 0;
+    inputs["snake_" + i + "_Y"] = snake[i] ? snake[i][1] : 0;
   }
-  return hash;
-};
+  inputs["snack_X"] = snack[0];
+  inputs["snack_Y"] = snack[1];
+
+  return inputs;
+}
+
+const HashCode = (s) => {
+  let h;
+  for(let i = 0; i < s.length; i++) 
+        h = Math.imul(31, h) + s.charCodeAt(i) | 0;
+
+  return h;
+}
 
 const options = {
   task: "classification",
+  // task: "regression",
   debug: false,
 };
 
 const trainingOptions = {
   epochs: 128,
-  batchSize: 1024,
+  batchSize: 512,
 };
 
 const nn = ml5.neuralNetwork(options);
 
 const model = {
   init(data, handleTrainingCompleted) {
+    console.log("init:", data);
     data.forEach((item) => {
-      const inputs = {
-        snake: item.snake,
-        snackX: item.snackX,
-        snackY: item.snackY,
-      };
+      console.log(item);
+      const inputs = item.inputs;
+      // const inputs = {
+      //   snake: item.snake,
+      //   snackX: item.snackX,
+      //   snackY: item.snackY,
+      // };
 
       const output = {
-        direction: item.direction,
+        direction: item.output,
       };
       nn.addData(inputs, output);
     });
@@ -58,8 +84,6 @@ const model = {
   },
   load(handleTrainingCompleted) {
     const modelLoaded = () => {
-      // continue on your neural network journey
-      // use nn.classify() for classifications or nn.predict() for regressions
       console.log("model loaded");
       handleTrainingCompleted("finish training");
     }
@@ -70,14 +94,14 @@ const model = {
       weights: "../model/model.weights.bin"
     }, modelLoaded);
   },
-  // Step 8: make a classification
   classify(item, handleResult) {
-    // console.log(data)
-    const input = {
-      snake: item.snake,
-      snackX: item.snackX,
-      snackY: item.snackY,
-    };
+    console.log("classify:", item);
+    const input = item.inputs;
+    // const input = {
+    //   snake: item.snake,
+    //   snackX: item.snackX,
+    //   snackY: item.snackY,
+    // };
 
     const handleResults = (error, result) => {
       if (error) {
@@ -95,7 +119,8 @@ const model = {
   save() {
     nn.save();
   },
+
 };
 
 export default model;
-export { HashCode };
+export { HashCode , GenerateInput};
