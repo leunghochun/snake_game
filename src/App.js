@@ -132,8 +132,10 @@ const App = (props) => {
     };
 
     if (trainingDone === null)
-      api.getModel().then((res) => model.init(res, handleTrainingCompleted));
-    else model.classify(data, handleResult);
+      // api.getModel().then((res) => model.init(res, handleTrainingCompleted));
+      model.load(handleTrainingCompleted);
+    else 
+      model.classify(data, handleResult);
 
     data["output"] = direction;
     if (direction !== null) api.insert(data);
