@@ -120,7 +120,7 @@ const App = (props) => {
   };
 
   useEffect(() => {
-    console.log("effect 222", trainingDone);
+    console.log("effect 222", trainingDone, snack);
     // let data = {
     //   snake: HashCode(JSON.stringify(snakeArray)),
     //   snackX: snack[0],
@@ -132,7 +132,8 @@ const App = (props) => {
     };
 
     if (trainingDone === null)
-      api.getModel().then((res) => model.init(res, handleTrainingCompleted));
+      model.load(handleTrainingCompleted);
+      // api.getModel().then((res) => model.init(res, handleTrainingCompleted));
     else model.classify(data, handleResult);
 
     data["output"] = direction;
