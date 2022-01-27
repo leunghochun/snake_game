@@ -53,14 +53,8 @@ const model = {
   init(data, handleTrainingCompleted) {
     console.log("init:", data);
     data.forEach((item) => {
-      console.log(item);
+      // console.log(item);
       const inputs = item.inputs;
-      // const inputs = {
-      //   snake: item.snake,
-      //   snackX: item.snackX,
-      //   snackY: item.snackY,
-      // };
-
       const output = {
         direction: item.output,
       };
@@ -97,11 +91,6 @@ const model = {
   classify(item, handleResult) {
     console.log("classify:", item);
     const input = item.inputs;
-    // const input = {
-    //   snake: item.snake,
-    //   snackX: item.snackX,
-    //   snackY: item.snackY,
-    // };
 
     const handleResults = (error, result) => {
       if (error) {

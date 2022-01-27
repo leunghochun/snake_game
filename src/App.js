@@ -18,6 +18,7 @@ const App = (props) => {
   const [snakeArray, setSnakeArray] = useState(props.snakeArray);
   const [mapArray, setMapArray] = useState(props.mapArray);
   const [distance, setDistance] = useState(props.distance);
+  const [pathDistance, setPathDistance] = useState(props.distance);
   const [direction, setDirection] = useState(null);
   const [prediction, setPrediction] = useState(null);
   const [trainingDone, setTrainingDone] = useState(null);
@@ -99,7 +100,7 @@ const App = (props) => {
     if (head === null) return;
 
     newSize = snake.growth(newSize, head, snack);
-    // snake update
+    // head update
     newSnake.unshift(head);
     newMap[head[0]][head[1]] = "snake";
     // tail update
@@ -110,6 +111,7 @@ const App = (props) => {
       newSnack = NewSnack(row, column, newMap);
       newMap[newSnack[0]][newSnack[1]] = "snack";
       setSnack(newSnack);
+      setPathDistance(Distance(newSnake[0], newSnack));
     }
 
     setDirection(direct);
@@ -121,12 +123,7 @@ const App = (props) => {
 
   useEffect(() => {
     console.log("effect 222", trainingDone, snack);
-    // let data = {
-    //   snake: HashCode(JSON.stringify(snakeArray)),
-    //   snackX: snack[0],
-    //   snackY: snack[1],
-    //   direction: direction
-    // }
+
     let data = {
       inputs: GenerateInput(snakeArray, snack),
     };
@@ -137,7 +134,11 @@ const App = (props) => {
     else model.classify(data, handleResult);
 
     data["output"] = direction;
-    if (direction !== null) api.insert(data);
+    if (direction !== null) {
+      // console.log( pathDistance , distance, Math.floor(pathDistance/distance));
+      for (let i=0; i< Math.floor(pathDistance/distance); i++)
+        api.insert(data);
+    }
   }, [direction, snakeArray, snack, trainingDone]);
 
   return (
