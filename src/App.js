@@ -144,17 +144,9 @@ const App = (props) => {
       inputs: GenerateInput(snakeArray, snack),
     };
 
-<<<<<<< HEAD
-    if (trainingDone === null)
-      // api.getModel().then((res) => model.init(res, handleTrainingCompleted));
-      model.load(handleTrainingCompleted);
-    else 
-      model.classify(data, handleResult);
-=======
     if (trainingDone === null) model.load(handleTrainingCompleted);
     // api.getModel().then((res) => model.init(res, handleTrainingCompleted));
     else model.classify(data, handleResult);
->>>>>>> origin/stupid_mode
 
     data["output"] = direction;
     if (direction !== null) {
