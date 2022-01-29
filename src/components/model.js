@@ -1,24 +1,10 @@
 import { maxSize } from "./snake";
 
 const ml5 = require("ml5");
-// const dataModel = require("../model/model.json");
-// const metaData = require("../model/model_meta.json");
-// const weights = require("../model/model.weights.bin");
-
-// const HashCode = (s) => {
-//   let hash = 0;
-//   if (s.length === 0) return hash;
-//   for (let i = 0; i < s.length; i++) {
-//     let char = s.charCodeAt(i);
-//     hash = (hash << 5) - hash + char;
-//     hash = hash & hash; // Convert to 32bit integer
-//   }
-//   return hash;
-// };
 
 const GenerateInput = (snake, snack) => {
-  let inputs = {}
-  for (let i=0; i<maxSize; i++) {
+  let inputs = {};
+  for (let i = 0; i < maxSize; i++) {
     inputs["snake_" + i + "_X"] = snake[i] ? snake[i][0] : 0;
     inputs["snake_" + i + "_Y"] = snake[i] ? snake[i][1] : 0;
   }
@@ -26,15 +12,7 @@ const GenerateInput = (snake, snack) => {
   inputs["snack_Y"] = snack[1];
 
   return inputs;
-}
-
-const HashCode = (s) => {
-  let h;
-  for(let i = 0; i < s.length; i++) 
-        h = Math.imul(31, h) + s.charCodeAt(i) | 0;
-
-  return h;
-}
+};
 
 const options = {
   task: "classification",
@@ -43,24 +21,19 @@ const options = {
 };
 
 const trainingOptions = {
-  epochs: 128,
+  epochs: 512,
   batchSize: 512,
 };
 
-const nn = ml5.neuralNetwork(options);
+let nn = ml5.neuralNetwork(options);
 
 const model = {
-  init(data, handleTrainingCompleted) {
+  init(data, handleTrainingCompleted, handleWhileTraining) {
+    nn = ml5.neuralNetwork(options);
     console.log("init:", data);
     data.forEach((item) => {
-      console.log(item);
+      // console.log(item);
       const inputs = item.inputs;
-      // const inputs = {
-      //   snake: item.snake,
-      //   snackX: item.snackX,
-      //   snackY: item.snackY,
-      // };
-
       const output = {
         direction: item.output,
       };
@@ -72,10 +45,18 @@ const model = {
 
     // Step 7: use the trained model
     const finishedTraining = () => {
-      handleTrainingCompleted("finish training");
+      handleTrainingCompleted("done");
     };
 
     const whileTraining = (epoch, loss) => {
+      let result = {
+        epoch: epoch,
+        acc: loss.acc.toFixed(4),
+        loss: loss.loss.toFixed(4),
+        val_acc: loss.val_acc.toFixed(4),
+        val_loss: loss.val_loss.toFixed(4),
+      };
+      handleWhileTraining(result);
       // console.log("epoch:", epoch, ", loss:", loss);
     };
 
@@ -84,24 +65,21 @@ const model = {
   },
   load(handleTrainingCompleted) {
     const modelLoaded = () => {
-      console.log("model loaded");
-      handleTrainingCompleted("finish training");
-    }
+      handleTrainingCompleted("model loaded");
+    };
 
-    nn.load({
-      model: "../model/model.json",
-      metadata: "../model/model_meta.json",
-      weights: "../model/model.weights.bin"
-    }, modelLoaded);
+    nn.load(
+      {
+        model: "../model/model.json",
+        metadata: "../model/model_meta.json",
+        weights: "../model/model.weights.bin",
+      },
+      modelLoaded
+    );
   },
   classify(item, handleResult) {
     console.log("classify:", item);
     const input = item.inputs;
-    // const input = {
-    //   snake: item.snake,
-    //   snackX: item.snackX,
-    //   snackY: item.snackY,
-    // };
 
     const handleResults = (error, result) => {
       if (error) {
@@ -119,8 +97,7 @@ const model = {
   save() {
     nn.save();
   },
-
 };
 
 export default model;
-export { HashCode , GenerateInput};
+export { GenerateInput };

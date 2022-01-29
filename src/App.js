@@ -4,7 +4,9 @@ import Playground, { Distance, Init, NewSnack } from "./pages/playground.js";
 import Control from "./pages/control";
 import snake from "./components/snake";
 import api from "./adapters/api";
-import model, { HashCode, GenerateInput } from "./components/model";
+import model, { GenerateInput } from "./components/model";
+import { ControlContext } from "./contexts/ControlContext";
+import ShowObject from "./components/showObject";
 
 const App = (props) => {
   const upRef = useRef(null);
@@ -18,11 +20,16 @@ const App = (props) => {
   const [snakeArray, setSnakeArray] = useState(props.snakeArray);
   const [mapArray, setMapArray] = useState(props.mapArray);
   const [distance, setDistance] = useState(props.distance);
+  const [pathDistance, setPathDistance] = useState(props.distance);
   const [direction, setDirection] = useState(null);
   const [prediction, setPrediction] = useState(null);
   const [trainingDone, setTrainingDone] = useState(null);
+  const [trainingLog, setTrainingLog] = useState(null);
 
-  // console.log('App:', mapArray, ',size:,', size, snakeArray, row, column);
+  const handleWhileTraining = (result) => {
+    setTrainingLog(result);
+    setTrainingDone("processing");
+  };
 
   const handleTrainingCompleted = (result) => {
     console.log("handleTrainingCompleted", result, snack);
@@ -30,11 +37,6 @@ const App = (props) => {
     let data = {
       inputs: GenerateInput(snakeArray, snack),
     };
-    // let data = {
-    //   snake: HashCode(JSON.stringify(snakeArray)),
-    //   snackX: snack[0],
-    //   snackY: snack[1]
-    // }
     model.classify(data, handleResult);
   };
 
@@ -42,19 +44,23 @@ const App = (props) => {
     console.log("handleResult:", result, snakeArray, mapArray);
     let direct = null;
     for (let i = 0; i < result.length; i++) {
+      let tempSnake = [...snakeArray];
       // console.log(result[i].label, snake.step(snakeArray[0], result[i].label, row, column));
       let head = snake.move(snakeArray, mapArray, result[i].label, row, column);
-      console.log(
-        result[i].label,
-        snakeArray,
-        result[i].label,
-        row,
-        column,
-        head
-      );
+      tempSnake.unshift(head);
+      tempSnake.pop();
+      console.log(tempSnake, snakeArray, result[i].label, row, column, head);
       if (head !== null && direct === null) {
         direct = result[i].label;
       }
+      let data = {
+        inputs: GenerateInput(tempSnake, snack),
+      };
+      const tempHandleResult = (result) => {
+        // prediction =
+        console.log(result);
+      };
+      model.classify(data, tempHandleResult);
     }
 
     // switch (direct) {
@@ -73,6 +79,12 @@ const App = (props) => {
     //   default:
     //    console.log('no prediction');
     // }
+
+    for (let i = 0; i < result.length; i++) {
+      result[i][result[i].label] = result[i][result[i].label].toFixed(2);
+      delete result[i].label;
+      delete result[i].confidence;
+    }
     setPrediction(result);
   };
 
@@ -86,7 +98,12 @@ const App = (props) => {
       return;
     }
     if (direct === "RELOAD") {
-      api.getModel().then((res) => model.init(res, handleTrainingCompleted));
+      setTrainingDone("downloading data");
+      api
+        .getModel()
+        .then((res) =>
+          model.init(res, handleTrainingCompleted, handleWhileTraining)
+        );
       return;
     }
 
@@ -99,7 +116,7 @@ const App = (props) => {
     if (head === null) return;
 
     newSize = snake.growth(newSize, head, snack);
-    // snake update
+    // head update
     newSnake.unshift(head);
     newMap[head[0]][head[1]] = "snake";
     // tail update
@@ -110,6 +127,7 @@ const App = (props) => {
       newSnack = NewSnack(row, column, newMap);
       newMap[newSnack[0]][newSnack[1]] = "snack";
       setSnack(newSnack);
+      setPathDistance(Distance(newSnake[0], newSnack));
     }
 
     setDirection(direct);
@@ -120,25 +138,30 @@ const App = (props) => {
   };
 
   useEffect(() => {
-    console.log("effect 222", trainingDone);
-    // let data = {
-    //   snake: HashCode(JSON.stringify(snakeArray)),
-    //   snackX: snack[0],
-    //   snackY: snack[1],
-    //   direction: direction
-    // }
+    console.log("effect 222", trainingDone, snack);
+
     let data = {
       inputs: GenerateInput(snakeArray, snack),
     };
 
+<<<<<<< HEAD
     if (trainingDone === null)
       // api.getModel().then((res) => model.init(res, handleTrainingCompleted));
       model.load(handleTrainingCompleted);
     else 
       model.classify(data, handleResult);
+=======
+    if (trainingDone === null) model.load(handleTrainingCompleted);
+    // api.getModel().then((res) => model.init(res, handleTrainingCompleted));
+    else model.classify(data, handleResult);
+>>>>>>> origin/stupid_mode
 
     data["output"] = direction;
-    if (direction !== null) api.insert(data);
+    if (direction !== null) {
+      // console.log( pathDistance , distance, Math.floor(pathDistance/distance));
+      for (let i = 0; i < Math.floor(pathDistance / distance); i++)
+        api.insert(data);
+    }
   }, [direction, snakeArray, snack, trainingDone]);
 
   return (
@@ -153,24 +176,29 @@ const App = (props) => {
           snack={snack}
         />
         <div className="right">
-          <Control
-            handleButtonPress={handleButtonPress}
-            distance={distance}
-            trainingDone={trainingDone}
-            upRef={upRef}
-            downRef={downRef}
-            leftRef={leftRef}
-            rightRef={rightRef}
-          />
+          <ControlContext.Provider
+            value={{ distance: distance, trainingDone: trainingDone }}
+          >
+            <Control
+              handleButtonPress={handleButtonPress}
+              upRef={upRef}
+              downRef={downRef}
+              leftRef={leftRef}
+              rightRef={rightRef}
+            />
+          </ControlContext.Provider>
           {prediction && (
-            <div>
+            <><div className="underline">Prediction:</div>
               {prediction.map((object, i) => (
-                <div key={i}>
-                  {object.label}:{object.confidence.toFixed(2)}
-                </div>
+                <ShowObject key={i} data={object} />
+                // <div key={i}>
+                //   {object.label}:{object.confidence.toFixed(2)}
+                // </div>
               ))}
-            </div>
+            </>
           )}
+          <div className="underline">acc/loss:</div>
+          <ShowObject data={trainingLog} />
         </div>
       </div>
     </>

@@ -1,6 +1,7 @@
+import { useContext } from "react";
+import { ControlContext } from "../contexts/ControlContext";
+
 const Control = ({  handleButtonPress, 
-                    distance, 
-                    trainingDone,
                     upRef,
                     downRef,
                     leftRef,
@@ -28,11 +29,14 @@ const Control = ({  handleButtonPress,
         handleButtonPress(direction);
     }
 
+    const data = useContext(ControlContext);
+
     return (
         <div>
             <div >
+                Training: {data.trainingDone} <br/>
                 Arrow key control: <input autoFocus id="row" onKeyDown={handleKeyPress}/> <br/>
-                Distance: {Number.parseFloat(distance).toFixed(2)} {trainingDone}
+                Distance: {Number.parseFloat(data.distance).toFixed(2)} 
             </div>
             <div className="control">
                 <div/>
