@@ -30,7 +30,7 @@ const Control = ({  handleButtonPress,
     }
 
     const data = useContext(ControlContext);
-    console.log(data);
+
     return (
         <div>
             <div >

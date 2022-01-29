@@ -6,6 +6,7 @@ import snake from "./components/snake";
 import api from "./adapters/api";
 import model, { GenerateInput } from "./components/model";
 import { ControlContext } from "./contexts/ControlContext";
+import ShowObject from "./components/showObject";
 
 const App = (props) => {
   const upRef = useRef(null);
@@ -23,6 +24,12 @@ const App = (props) => {
   const [direction, setDirection] = useState(null);
   const [prediction, setPrediction] = useState(null);
   const [trainingDone, setTrainingDone] = useState(null);
+  const [trainingLog, setTrainingLog] = useState(null);
+
+  const handleWhileTraining = (result) => {
+    setTrainingLog(result);
+    setTrainingDone("Training Now");
+  };
 
   const handleTrainingCompleted = (result) => {
     console.log("handleTrainingCompleted", result, snack);
@@ -49,7 +56,6 @@ const App = (props) => {
       let data = {
         inputs: GenerateInput(tempSnake, snack),
       };
-      let prediction = 0;
       const tempHandleResult = (result) => {
         // prediction =
         console.log(result);
@@ -73,6 +79,12 @@ const App = (props) => {
     //   default:
     //    console.log('no prediction');
     // }
+
+    for (let i = 0; i < result.length; i++) {
+      result[i][result[i].label] = result[i][result[i].label].toFixed(2);
+      delete result[i].label;
+      delete result[i].confidence;
+    }
     setPrediction(result);
   };
 
@@ -86,7 +98,11 @@ const App = (props) => {
       return;
     }
     if (direct === "RELOAD") {
-      api.getModel().then((res) => model.init(res, handleTrainingCompleted));
+      api
+        .getModel()
+        .then((res) =>
+          model.init(res, handleTrainingCompleted, handleWhileTraining)
+        );
       return;
     }
 
@@ -163,14 +179,17 @@ const App = (props) => {
             />
           </ControlContext.Provider>
           {prediction && (
-            <div>
+            <><div className="underline">Prediction:</div>
               {prediction.map((object, i) => (
-                <div key={i}>
-                  {object.label}:{object.confidence.toFixed(2)}
-                </div>
+                <ShowObject key={i} data={object} />
+                // <div key={i}>
+                //   {object.label}:{object.confidence.toFixed(2)}
+                // </div>
               ))}
-            </div>
+            </>
           )}
+          <div className="underline">acc/loss:</div>
+          <ShowObject data={trainingLog} />
         </div>
       </div>
     </>

@@ -59,3 +59,7 @@
 .modelPanel{
   margin-top: 3vh;
 }
+
+.underline {
+  text-decoration: underline;
+}
