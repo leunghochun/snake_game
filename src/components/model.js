@@ -45,7 +45,7 @@ const model = {
 
     // Step 7: use the trained model
     const finishedTraining = () => {
-      handleTrainingCompleted("finish training");
+      handleTrainingCompleted("done");
     };
 
     const whileTraining = (epoch, loss) => {
@@ -65,8 +65,7 @@ const model = {
   },
   load(handleTrainingCompleted) {
     const modelLoaded = () => {
-      console.log("model loaded");
-      handleTrainingCompleted("finish training");
+      handleTrainingCompleted("model loaded");
     };
 
     nn.load(

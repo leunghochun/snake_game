@@ -28,7 +28,7 @@ const App = (props) => {
 
   const handleWhileTraining = (result) => {
     setTrainingLog(result);
-    setTrainingDone("Training Now");
+    setTrainingDone("processing");
   };
 
   const handleTrainingCompleted = (result) => {
@@ -98,6 +98,7 @@ const App = (props) => {
       return;
     }
     if (direct === "RELOAD") {
+      setTrainingDone("downloading data");
       api
         .getModel()
         .then((res) =>

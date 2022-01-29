@@ -34,8 +34,9 @@ const Control = ({  handleButtonPress,
     return (
         <div>
             <div >
+                Training: {data.trainingDone} <br/>
                 Arrow key control: <input autoFocus id="row" onKeyDown={handleKeyPress}/> <br/>
-                Distance: {Number.parseFloat(data.distance).toFixed(2)} {data.trainingDone}
+                Distance: {Number.parseFloat(data.distance).toFixed(2)} 
             </div>
             <div className="control">
                 <div/>

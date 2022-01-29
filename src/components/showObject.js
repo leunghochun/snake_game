@@ -1,10 +1,8 @@
 const ShowObject = (props) => {
-  console.log(props.data)
-  //   const content = Object.entries(object).map((item) => <>{item[0] + item[1]}</>);
   return (
     <>
-      {props.data && Object.entries(props.data).map((item) => (
-        <div>
+      {props.data && Object.entries(props.data).map((item, i) => (
+        <div key={item[0] + i}>
             {item[0] + " " + item[1] + " "}
         </div>
       ))}
