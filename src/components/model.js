@@ -1,20 +1,6 @@
 import { maxSize } from "./snake";
 
 const ml5 = require("ml5");
-// const dataModel = require("../model/model.json");
-// const metaData = require("../model/model_meta.json");
-// const weights = require("../model/model.weights.bin");
-
-// const HashCode = (s) => {
-//   let hash = 0;
-//   if (s.length === 0) return hash;
-//   for (let i = 0; i < s.length; i++) {
-//     let char = s.charCodeAt(i);
-//     hash = (hash << 5) - hash + char;
-//     hash = hash & hash; // Convert to 32bit integer
-//   }
-//   return hash;
-// };
 
 const GenerateInput = (snake, snack) => {
   let inputs = {}
@@ -28,22 +14,14 @@ const GenerateInput = (snake, snack) => {
   return inputs;
 }
 
-const HashCode = (s) => {
-  let h;
-  for(let i = 0; i < s.length; i++) 
-        h = Math.imul(31, h) + s.charCodeAt(i) | 0;
-
-  return h;
-}
-
 const options = {
   task: "classification",
   // task: "regression",
-  debug: false,
+  debug: true
 };
 
 const trainingOptions = {
-  epochs: 128,
+  epochs: 512,
   batchSize: 512,
 };
 
@@ -112,4 +90,4 @@ const model = {
 };
 
 export default model;
-export { HashCode , GenerateInput};
+export { GenerateInput};
